@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_messagesItem" structureRef="java.util.List" />
+  <itemDefinition id="_tagItem" structureRef="String" />
+
+  <process processType="Private" isExecutable="true" id="mx.com.interware.training.jbpm.embeddedsubprocess" name="embeddedSubProcess" tns:packageName="mx.com.interware.training.jbpm" >
+
+    <extensionElements>
+     <tns:import name="java.text.SimpleDateFormat" />
+     <tns:import name="java.util.Date" />
+     <tns:import name="java.util.List" />
+     <tns:import name="java.util.ArrayList" />
+    </extensionElements>
+    <!-- process variables -->
+    <property id="messages" itemSubjectRef="_messagesItem"/>
+    <property id="tag" itemSubjectRef="_tagItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <scriptTask id="_2" name="Format Tag" scriptFormat="http://www.java.com/java" >
+      <script>SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+kcontext.setVariable("tag",  sdf.format(new Date(System.currentTimeMillis())));</script>
+    </scriptTask>
+    <subProcess id="_3" name="Tag Messages Sub-Process"  >
+    <!-- nodes -->
+    <startEvent id="_3-1" name="Start" />
+    <scriptTask id="_3-2" name="Apply Tag" scriptFormat="http://www.java.com/java" >
+      <script>List&lt;String&gt; taggedMessages = new ArrayList&lt;String&gt;();
+for (Object message : messages){
+    taggedMessages.add(((String)message)+"-"+tag);    
+}
+kcontext.setVariable("messages",taggedMessages);</script>
+    </scriptTask>
+    <endEvent id="_3-3" name="End" >
+        <terminateEventDefinition />
+    </endEvent>
+    <!-- connections -->
+    <sequenceFlow id="_3-1-_3-2" sourceRef="_3-1" targetRef="_3-2" />
+    <sequenceFlow id="_3-2-_3-3" sourceRef="_3-2" targetRef="_3-3" />
+    </subProcess>
+    <endEvent id="_4" name="End" >
+        <terminateEventDefinition />
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="mx.com.interware.training.jbpm.embeddedsubprocess" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="113" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="113" width="114" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="242" y="16" width="333" height="242" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3-1" >
+        <dc:Bounds x="261" y="104" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3-2" >
+        <dc:Bounds x="355" y="102" width="106" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3-3" >
+        <dc:Bounds x="502" y="103" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="607" y="113" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_3-1-_3-2" >
+        <di:waypoint x="43" y="112" />
+        <di:waypoint x="166" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_3-2-_3-3" >
+        <di:waypoint x="166" y="110" />
+        <di:waypoint x="284" y="111" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="40" y="137" />
+        <di:waypoint x="153" y="137" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="153" y="137" />
+        <di:waypoint x="408" y="137" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_3-_4" >
+        <di:waypoint x="408" y="137" />
+        <di:waypoint x="631" y="137" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

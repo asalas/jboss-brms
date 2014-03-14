@@ -1,0 +1,40 @@
+//created on: 10/10/2013
+package mx.com.interware.training.jbpm
+
+//list any import classes here.
+import mx.com.interware.training.jbpm.model.Person
+import mx.com.interware.training.jbpm.model.Car
+import org.drools.runtime.process.WorkflowProcessInstance
+
+//declare any global variables here
+
+rule "Select Person Tagger"
+	ruleflow-group "select_subprocess"
+    when
+        //conditions
+        $process : WorkflowProcessInstance()
+        $p : Person()
+    then
+        //actions
+        System.out.println("Rule!!! Select Person Tagger ;)");        
+        ((WorkflowProcessInstance)kcontext.getKnowledgeRuntime().getProcessInstance($process.getId())).setVariable("selectedSubProcessId","mx.com.interware.training.jbpm.persontaggerprocess");
+        retract($p);
+        retract($process);
+
+end
+
+rule "Select Car Tagger"
+    //include attributes such as "salience" here...
+    ruleflow-group "select_subprocess"
+    when
+        //conditions
+        $process: WorkflowProcessInstance()
+        $c : Car()
+    then
+        //actions
+        System.out.println("Rule!!! Select Car Tagger ;)");
+        ((WorkflowProcessInstance)kcontext.getKnowledgeRuntime().getProcessInstance($process.getId())).setVariable("selectedSubProcessId","mx.com.interware.training.jbpm.cartaggerprocess");
+        retract($c);
+        retract($process);
+
+end

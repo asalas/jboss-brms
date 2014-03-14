@@ -1,0 +1,6 @@
+//created on: 15/10/2013
+package mx.com.interware.training.jbpm
+
+import java.util.List;
+
+global List executionHistory;

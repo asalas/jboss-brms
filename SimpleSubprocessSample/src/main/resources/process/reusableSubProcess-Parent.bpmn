@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_messagesItem" structureRef="java.util.List" />
+  <itemDefinition id="_tagItem" structureRef="String" />
+
+  <process processType="Private" isExecutable="true" id="mx.com.interware.training.jbpm.reusablesubprocessparent" name="reusableSubProcess.Parent" tns:packageName="mx.com.interware.training.jbpm" >
+
+    <extensionElements>
+     <tns:import name="java.text.SimpleDateFormat" />
+     <tns:import name="java.util.Date" />
+    </extensionElements>
+    <!-- process variables -->
+    <property id="messages" itemSubjectRef="_messagesItem"/>
+    <property id="tag" itemSubjectRef="_tagItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <scriptTask id="_2" name="Format Tag" scriptFormat="http://www.java.com/java" >
+      <script>System.out.println("Proceso-Padre ID = "+kcontext.getProcessInstance().getId());
+SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+kcontext.setVariable("tag",  sdf.format(new Date(System.currentTimeMillis())));</script>
+    </scriptTask>
+    <callActivity id="_3" name="Message-Tagger-Process" calledElement="mx.com.interware.training.jbpm.reusablesubprocesschild" >
+      <ioSpecification>
+        <dataInput id="_3_internalTagInput" name="internalTag" />
+        <dataInput id="_3_internalMessagesInput" name="internalMessages" />
+        <dataOutput id="_3_internalTagOutput" name="internalTag" />
+        <dataOutput id="_3_internalMessagesOutput" name="internalMessages" />
+        <inputSet>
+          <dataInputRefs>_3_internalTagInput</dataInputRefs>
+          <dataInputRefs>_3_internalMessagesInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_3_internalTagOutput</dataOutputRefs>
+          <dataOutputRefs>_3_internalMessagesOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>tag</sourceRef>
+        <targetRef>_3_internalTagInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>messages</sourceRef>
+        <targetRef>_3_internalMessagesInput</targetRef>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_3_internalTagOutput</sourceRef>
+        <targetRef>tag</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_3_internalMessagesOutput</sourceRef>
+        <targetRef>messages</targetRef>
+      </dataOutputAssociation>
+    </callActivity>
+    <endEvent id="_4" name="End" >
+        <terminateEventDefinition />
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="mx.com.interware.training.jbpm.reusablesubprocessparent" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="16" width="106" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="234" y="16" width="189" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="455" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="40" y="40" />
+        <di:waypoint x="149" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="149" y="40" />
+        <di:waypoint x="328" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_3-_4" >
+        <di:waypoint x="328" y="40" />
+        <di:waypoint x="479" y="40" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>
